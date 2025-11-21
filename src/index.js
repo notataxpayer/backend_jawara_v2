@@ -8,6 +8,7 @@ import keluargaRoutes from './routes/keluargaRoutes.js';
 import wargaRoutes from './routes/wargaRoutes.js';
 import rumahRoutes from './routes/rumahRoutes.js';
 import marketPlaceRoutes from './routes/marketPlaceRoutes.js';
+import verificationWargaRoutes from './routes/verificationWargaRoutes.js';
 
 dotenv.config();
 
@@ -51,6 +52,9 @@ app.use('/api/rumah', rumahRoutes);
 
 // MarketPlace routes
 app.use('/api/marketplace', marketPlaceRoutes);
+
+// Verification Warga routes
+app.use('/api/verification-warga', verificationWargaRoutes);
 
 // Start server
 app.listen(PORT, () => {

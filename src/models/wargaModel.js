@@ -75,5 +75,20 @@ export const WargaModel = {
     }
 
     return data;
+  },
+
+  // Get warga by user ID
+  async findByUserId(userId) {
+    const { data, error } = await supabase
+      .from('warga')
+      .select('*')
+      .eq('userId', userId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+
+    return data;
   }
 };
