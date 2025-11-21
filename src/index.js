@@ -1,0 +1,58 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
+import authRoutes from './routes/authRoutes.js';
+import keluargaRoutes from './routes/keluargaRoutes.js';
+import wargaRoutes from './routes/wargaRoutes.js';
+import rumahRoutes from './routes/rumahRoutes.js';
+import marketPlaceRoutes from './routes/marketPlaceRoutes.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Routes
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to Backend Jawara API',
+    status: 'success'
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Auth routes
+app.use('/api/auth', authRoutes);
+
+// Keluarga routes
+app.use('/api/keluarga', keluargaRoutes);
+
+// Warga routes
+app.use('/api/warga', wargaRoutes);
+
+// Rumah routes
+app.use('/api/rumah', rumahRoutes);
+
+// MarketPlace routes
+app.use('/api/marketplace', marketPlaceRoutes);
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
