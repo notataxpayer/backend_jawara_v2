@@ -68,29 +68,6 @@ router.get('/my-requests', authMiddleware, VerificationWargaController.getMyRequ
 
 /**
  * @swagger
- * /api/verification-warga/{id}:
- *   get:
- *     summary: Get verification request by ID (authenticated users only)
- *     tags: [Verification Warga]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Verification request ID
- *     responses:
- *       200:
- *         description: Verification request retrieved successfully
- *       404:
- *         description: Verification request not found
- */
-router.get('/:id', authMiddleware, VerificationWargaController.getById);
-
-/**
- * @swagger
  * /api/verification-warga/all:
  *   get:
  *     summary: Get all verification requests (admin only)
@@ -120,6 +97,29 @@ router.get('/all', authMiddleware, roleMiddleware(['adminSistem', 'ketuaRT', 'ke
  *         description: Access denied
  */
 router.get('/pending', authMiddleware, roleMiddleware(['adminSistem', 'ketuaRT', 'ketuaRW']), VerificationWargaController.getPending);
+
+/**
+ * @swagger
+ * /api/verification-warga/{id}:
+ *   get:
+ *     summary: Get verification request by ID (authenticated users only)
+ *     tags: [Verification Warga]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Verification request ID
+ *     responses:
+ *       200:
+ *         description: Verification request retrieved successfully
+ *       404:
+ *         description: Verification request not found
+ */
+router.get('/:id', authMiddleware, VerificationWargaController.getById);
 
 /**
  * @swagger
