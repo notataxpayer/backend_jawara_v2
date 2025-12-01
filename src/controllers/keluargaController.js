@@ -126,7 +126,7 @@ export const KeluargaController = {
 
       // Add optional fields
       if (rumahId) {
-        keluargaData.rumahid = rumahId;
+        keluargaData.rumahId = rumahId;
       }
 
       if (kepala_Keluarga_Id) {
@@ -134,6 +134,14 @@ export const KeluargaController = {
       }
 
       const newKeluarga = await KeluargaModel.create(keluargaData);
+
+      // Auto-sync: Update rumah table to link to this keluarga
+      if (rumahId) {
+        await supabase
+          .from('rumah')
+          .update({ keluargaid: newKeluarga.id })
+          .eq('id', rumahId);
+      }
 
       res.status(201).json({
         success: true,
@@ -187,6 +195,24 @@ export const KeluargaController = {
       }
 
       const updatedKeluarga = await KeluargaModel.update(id, updateData);
+
+      // Auto-sync: Update rumah table
+      if (rumahId !== undefined) {
+        // Remove old rumah link if exists
+        if (existingKeluarga.rumahId || existingKeluarga.rumahid) {
+          await supabase
+            .from('rumah')
+            .update({ keluargaid: null })
+            .eq('id', existingKeluarga.rumahId || existingKeluarga.rumahid);
+        }
+        // Set new rumah link
+        if (rumahId) {
+          await supabase
+            .from('rumah')
+            .update({ keluargaid: id })
+            .eq('id', rumahId);
+        }
+      }
 
       res.status(200).json({
         success: true,
