@@ -70,19 +70,19 @@ export const KeluargaController = {
         });
       }
 
-      // Prepare keluarga data
+      // Prepare keluarga data with correct column names
       const keluargaData = {
         namaKeluarga,
-        jumlahAnggota: parseInt(jumlahAnggota)
+        jumlahanggota: parseInt(jumlahAnggota)
       };
 
       // Add optional fields
       if (rumahId) {
-        keluargaData.rumahId = rumahId;
+        keluargaData.rumahid = rumahId;
       }
 
       if (kepala_Keluarga_Id) {
-        keluargaData.kepala_Keluarga_Id = kepala_Keluarga_Id;
+        keluargaData.kepala_keluarga_id = kepala_Keluarga_Id;
       }
 
       const newKeluarga = await KeluargaModel.create(keluargaData);
@@ -117,7 +117,7 @@ export const KeluargaController = {
         });
       }
 
-      // Prepare update data
+      // Prepare update data with correct column names
       const updateData = {};
       if (namaKeluarga) updateData.namaKeluarga = namaKeluarga;
       if (jumlahAnggota) {
@@ -127,7 +127,7 @@ export const KeluargaController = {
             message: 'jumlahAnggota must be a positive number'
           });
         }
-        updateData.jumlahAnggota = parseInt(jumlahAnggota);
+        updateData.jumlahanggota = parseInt(jumlahAnggota);
       }
       
       if (rumahId !== undefined) {
@@ -135,7 +135,7 @@ export const KeluargaController = {
       }
       
       if (kepala_Keluarga_Id !== undefined) {
-        updateData.kepala_Keluarga_Id = kepala_Keluarga_Id || null;
+        updateData.kepala_keluarga_id = kepala_Keluarga_Id || null;
       }
 
       const updatedKeluarga = await KeluargaModel.update(id, updateData);

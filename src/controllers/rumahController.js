@@ -78,16 +78,16 @@ export const RumahController = {
         });
       }
 
-      // Prepare rumah data
+      // Prepare rumah data with lowercase column names for database
       const rumahData = {
-        statusKepemilikan,
+        statuskepemilikan: statusKepemilikan,
         alamat,
-        jumlahPenghuni: parseInt(jumlahPenghuni)
+        jumlahpenghuni: parseInt(jumlahPenghuni)
       };
 
       // Add keluargaId only if provided
       if (keluargaId) {
-        rumahData.keluargaId = keluargaId;
+        rumahData.keluargaid = keluargaId;
       }
 
       const newRumah = await RumahModel.create(rumahData);
@@ -132,7 +132,7 @@ export const RumahController = {
             message: 'statusKepemilikan must be either milik_sendiri or kontrak'
           });
         }
-        updateData.statusKepemilikan = statusKepemilikan;
+        updateData.statuskepemilikan = statusKepemilikan;
       }
       
       if (alamat) updateData.alamat = alamat;
@@ -144,11 +144,11 @@ export const RumahController = {
             message: 'jumlahPenghuni must be a non-negative number'
           });
         }
-        updateData.jumlahPenghuni = parseInt(jumlahPenghuni);
+        updateData.jumlahpenghuni = parseInt(jumlahPenghuni);
       }
       
       if (keluargaId !== undefined) {
-        updateData.keluargaId = keluargaId || null;
+        updateData.keluargaid = keluargaId || null;
       }
 
       const updatedRumah = await RumahModel.update(id, updateData);

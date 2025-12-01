@@ -414,10 +414,13 @@ export const VerificationWargaController = {
         });
       }
 
-      // Update warga status to 'rejected'
-      const wargaExists = await WargaModel.findByNIK(verification.warga_id);
-      if (wargaExists) {
-        await WargaModel.update(verification.warga_id, { status: 'rejected' });
+      // Update warga status to 'rejected' only if warga_id exists
+      // For new registrations, warga_id is NULL so skip this step
+      if (verification.warga_id && verification.warga_id !== null) {
+        const wargaExists = await WargaModel.findByNIK(verification.warga_id);
+        if (wargaExists) {
+          await WargaModel.update(verification.warga_id, { status: 'rejected' });
+        }
       }
 
       // Update verification status
