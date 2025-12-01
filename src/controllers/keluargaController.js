@@ -1,15 +1,42 @@
 import { KeluargaModel } from '../models/keluargaModel.js';
+import { supabase } from '../config/supabase.js';
 
 export const KeluargaController = {
   // Get all keluarga
   async getAll(req, res) {
     try {
-      const keluarga = await KeluargaModel.getAll();
+      const keluargaList = await KeluargaModel.getAll();
+
+      // Enrich each keluarga with kepala_keluarga info and anggota list
+      const enriched = await Promise.all(keluargaList.map(async (k) => {
+        const kepalaNik = k.kepala_keluarga_id || k.kepala_Keluarga_Id || null;
+
+        let kepala = null;
+        if (kepalaNik) {
+          const { data: kepalaData } = await supabase
+            .from('warga')
+            .select('nik, namaWarga')
+            .eq('nik', kepalaNik)
+            .single();
+          kepala = kepalaData || null;
+        }
+
+        const { data: anggota } = await supabase
+          .from('warga')
+          .select('nik, namaWarga')
+          .eq('keluargaId', k.id);
+
+        return {
+          ...k,
+          kepala_keluarga: kepala,
+          anggota: anggota || []
+        };
+      }));
 
       res.status(200).json({
         success: true,
         message: 'Keluarga retrieved successfully',
-        data: keluarga
+        data: enriched
       });
     } catch (error) {
       console.error('Get all keluarga error:', error);
@@ -34,10 +61,31 @@ export const KeluargaController = {
         });
       }
 
+      // Resolve kepala_keluarga (if present) and anggota list
+      const kepalaNik = keluarga.kepala_keluarga_id || keluarga.kepala_Keluarga_Id || null;
+      let kepala = null;
+      if (kepalaNik) {
+        const { data: kepalaData } = await supabase
+          .from('warga')
+          .select('nik, namaWarga')
+          .eq('nik', kepalaNik)
+          .single();
+        kepala = kepalaData || null;
+      }
+
+      const { data: anggota } = await supabase
+        .from('warga')
+        .select('nik, namaWarga')
+        .eq('keluargaId', keluarga.id);
+
       res.status(200).json({
         success: true,
         message: 'Keluarga retrieved successfully',
-        data: keluarga
+        data: {
+          ...keluarga,
+          kepala_keluarga: kepala,
+          anggota: anggota || []
+        }
       });
     } catch (error) {
       console.error('Get keluarga by id error:', error);
